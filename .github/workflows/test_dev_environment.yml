@@ -1,0 +1,31 @@
+name: Docker Build CI
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-env-without-user-data:
+    name: Build docker environment without custom user data
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build docker environment
+      run: docker compose build --pull 
+    - name: Start docker environment
+      run: docker compose up -d
+    - name: Run cargo build inside docker environment
+      run: docker compose exec dev cargo build
+
+  build-env-with-user-data:
+    name: Build docker environment with custom user id and gid
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name:
+      run: docker compose build --pull --build-arg FIX_UID="$(id -u)" --build-arg FIX_GID="$(id -g)"
+    - name: Start docker environment
+      run: docker compose up -d
+    - name: Run cargo build inside docker environment
+      run: docker compose exec -u $(id -u):$(id -g) dev cargo build
