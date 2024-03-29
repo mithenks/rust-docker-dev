@@ -9,4 +9,4 @@ docker compose build --pull --build-arg FIX_UID="$(id -u)" --build-arg FIX_GID="
 docker compose up -d
 
 # Run a bash shell inside docker container
-docker compose exec -u $(id -u):$(id -g) dev /bin/bash
+docker compose exec dev /bin/bash
